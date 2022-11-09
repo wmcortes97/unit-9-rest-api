@@ -12,7 +12,7 @@ const enableGlobalErrorLogging =
 // create the Express app
 const app = express();
 
-//-------AUTHENTICATE-------//
+//-------Test connection to database-------//
 (async () => {
   try {
     await Sequelize.sync();
