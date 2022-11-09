@@ -4,6 +4,10 @@
 const express = require("express");
 const morgan = require("morgan");
 const Sequelize = require("./models/index.js").sequelize;
+const indexRouter = require("./routes/index");
+
+//connecting routes/index.js to app.js
+app.use("/api", indexRouter);
 
 // variable to enable global error logging
 const enableGlobalErrorLogging =
@@ -59,3 +63,5 @@ app.set("port", process.env.PORT || 5000);
 const server = app.listen(app.get("port"), () => {
   console.log(`Express server is listening on port ${server.address().port}`);
 });
+
+module.exports = app;
