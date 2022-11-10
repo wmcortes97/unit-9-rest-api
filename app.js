@@ -6,15 +6,15 @@ const morgan = require("morgan");
 const Sequelize = require("./models/index.js").sequelize;
 const indexRouter = require("./routes/index");
 
-//connecting routes/index.js to app.js
-app.use("/api", indexRouter);
-
 // variable to enable global error logging
 const enableGlobalErrorLogging =
   process.env.ENABLE_GLOBAL_ERROR_LOGGING === "true";
 
 // create the Express app
 const app = express();
+
+//connecting routes/index.js to app.js
+app.use("/api", indexRouter);
 
 //-------Test connection to database-------//
 (async () => {
