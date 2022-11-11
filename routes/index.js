@@ -25,16 +25,11 @@ router.get(
   asyncHandler(async (req, res) => {
     let user = req.currentUser;
 
-    //setting response header?
-    // if(user) {
-    //   res.location("/");
-    // }
-
     res.json({
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.emailAddress,
-      password: user.password,
+      // password: user.password,
     });
     res.status(200);
   })
@@ -46,7 +41,7 @@ router.post(
   asyncHandler(async (req, res) => {
     try {
       await User.create(req.body);
-      res.status(201).json({ message: "Account successfully created!" });
+      res.status(201).location("/").end();
     } catch (error) {
       if (
         error.name === "SequelizeValidationError" ||
@@ -67,7 +62,7 @@ router.get(
   "/courses",
   // authenticateUser,
   asyncHandler(async (req, res) => {
-    const courses = await Course.findAll();
+    const courses = await Course.findAll(); //return specific attributes
     res.json(courses);
     res.status(200);
   })
@@ -80,7 +75,13 @@ router.get(
   asyncHandler(async (req, res, next) => {
     const course = await Course.findByPk(req.params.id);
     if (course) {
-      res.json(course);
+      res.json({
+        title: course.title,
+        description: course.description,
+        estimatedTime: course.estimatedTime,
+        materialsNeeded: course.materialsNeeded,
+        userId: course.userId,
+      });
       res.status(200);
     } else {
       const error = new Error("Course was not found");
@@ -103,8 +104,7 @@ router.post(
         userId: req.body.userId,
       });
 
-      res.status(201);
-      res.json(course);
+      res.status(201).location("/").end();
     } catch (error) {
       if (
         error.name === "SequelizeValidationError" ||
@@ -128,11 +128,13 @@ router.put(
     try {
       course = await Course.findByPk(req.params.id);
       if (course) {
-        course.title = req.body.title;
-        course.description = req.body.description;
+        if (course.userId === req.body.userId) {
+          await course.update(req.body);
 
-        await course.update(course);
-        res.status(204).end();
+          res.status(204).end();
+        } else {
+          res.status(403).json({ message: "user not authenticated" });
+        }
       } else {
         res.status(404).json({ message: "Course was not found" });
       }
@@ -159,9 +161,12 @@ router.delete(
     try {
       course = await Course.findByPk(req.params.id);
       if (course) {
-        await course.destroy();
-
-        res.status(204).end();
+        if (course.userId === req.body.userId) {
+          await course.destroy();
+          res.status(204).end();
+        } else {
+          res.status(403).json({ message: "user not authenticated" });
+        }
       } else {
         res.status(404).json({ message: "Course was not found" });
       }
