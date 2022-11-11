@@ -75,7 +75,7 @@ router.get(
 router.get(
   "/courses/:id",
   // authenticateUser,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res, next) => {
     const course = await Course.findByPk(req.params.id);
     if (course) {
       res.json(course);
@@ -96,23 +96,55 @@ router.post(
     const course = await Course.create({
       title: req.body.title,
       description: req.body.description,
+      userId: req.body.userId,
     });
+    res.status(201);
     res.json(course);
   })
 );
 
-/*PUT route that will update a new course */
+/*PUT route that will update/edit a new course */
 router.put(
   "/courses/:id",
   // authenticateUser,
-  asyncHandler(async (req, res) => {})
+  asyncHandler(async (req, res) => {
+    let course;
+    try {
+      course = await Course.findByPk(req.params.id);
+      if (course) {
+        course.title = req.body.title;
+        course.description = req.body.description;
+
+        await course.update(course);
+        res.status(204).end();
+      } else {
+        res.status(404).json({ message: "Course was not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: err.message });
+    }
+  })
 );
 
 /*DELETE route that will delete the corresponing course */
 router.delete(
   "/courses/:id",
   // authenticateUser,
-  asyncHandler(async (req, res) => {})
+  asyncHandler(async (req, res) => {
+    let course;
+    try {
+      course = await Course.findByPk(req.params.id);
+      if (course) {
+        await course.destroy();
+
+        res.status(204).end();
+      } else {
+        res.status(404).json({ message: "Course was not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: err.message });
+    }
+  })
 );
 
 module.exports = router;
