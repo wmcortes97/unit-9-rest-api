@@ -25,6 +25,11 @@ router.get(
   asyncHandler(async (req, res) => {
     let user = req.currentUser;
 
+    //setting response header?
+    // if(user) {
+    //   res.location("/");
+    // }
+
     res.json({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -59,21 +64,25 @@ router.post(
 /*GET route that will return all courses including the User associated with each course*/
 router.get(
   "/courses",
-  authenticateUser,
-  asyncHandler(async (req, res) => {})
+  // authenticateUser,
+  asyncHandler(async (req, res) => {
+    const courses = await Course.findAll();
+
+    res.json(courses);
+  })
 );
 
 /*GET route that will return the corresponding course including the User associated with that course */
 router.get(
   "/courses/:id",
-  authenticateUser,
+  // authenticateUser,
   asyncHandler(async (req, res) => {})
 );
 
 /*POST route that will create a new course */
 router.post(
   "/courses",
-  authenticateUser,
+  // authenticateUser,
   asyncHandler(async (req, res) => {
     const course = await Course.create({
       title: req.body.title,
@@ -86,14 +95,14 @@ router.post(
 /*PUT route that will update a new course */
 router.put(
   "/courses/:id",
-  authenticateUser,
+  // authenticateUser,
   asyncHandler(async (req, res) => {})
 );
 
 /*DELETE route that will delete the corresponing course */
 router.delete(
   "/courses/:id",
-  authenticateUser,
+  // authenticateUser,
   asyncHandler(async (req, res) => {})
 );
 
