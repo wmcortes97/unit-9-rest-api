@@ -12,6 +12,7 @@ const enableGlobalErrorLogging =
 
 // create the Express app
 const app = express();
+app.use(express.json());
 
 //connecting routes/index.js to app.js
 app.use("/api", indexRouter);
