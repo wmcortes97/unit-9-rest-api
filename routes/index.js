@@ -67,7 +67,6 @@ router.get(
   // authenticateUser,
   asyncHandler(async (req, res) => {
     const courses = await Course.findAll();
-
     res.json(courses);
   })
 );
@@ -76,7 +75,17 @@ router.get(
 router.get(
   "/courses/:id",
   // authenticateUser,
-  asyncHandler(async (req, res) => {})
+  asyncHandler(async (req, res) => {
+    const course = await Course.findByPk(req.params.id);
+    if (course) {
+      res.json(course);
+      res.status(200);
+    } else {
+      const error = new Error("Course was not found");
+      error.status = 404;
+      next(error);
+    }
+  })
 );
 
 /*POST route that will create a new course */
