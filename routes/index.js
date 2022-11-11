@@ -36,6 +36,7 @@ router.get(
       email: user.emailAddress,
       password: user.password,
     });
+    res.status(200);
   })
 );
 
@@ -68,6 +69,7 @@ router.get(
   asyncHandler(async (req, res) => {
     const courses = await Course.findAll();
     res.json(courses);
+    res.status(200);
   })
 );
 
@@ -93,13 +95,27 @@ router.post(
   "/courses",
   authenticateUser,
   asyncHandler(async (req, res) => {
-    const course = await Course.create({
-      title: req.body.title,
-      description: req.body.description,
-      userId: req.body.userId,
-    });
-    res.status(201);
-    res.json(course);
+    let course;
+    try {
+      course = await Course.create({
+        title: req.body.title,
+        description: req.body.description,
+        userId: req.body.userId,
+      });
+
+      res.status(201);
+      res.json(course);
+    } catch (error) {
+      if (
+        error.name === "SequelizeValidationError" ||
+        error.name === "SequelizeUniqueConstraintError"
+      ) {
+        const errors = error.errors.map((err) => err.message);
+        res.status(400).json({ errors });
+      } else {
+        throw error;
+      }
+    }
   })
 );
 
@@ -121,7 +137,15 @@ router.put(
         res.status(404).json({ message: "Course was not found" });
       }
     } catch (error) {
-      res.status(500).json({ message: err.message });
+      if (
+        error.name === "SequelizeValidationError" ||
+        error.name === "SequelizeUniqueConstraintError"
+      ) {
+        const errors = error.errors.map((err) => err.message);
+        res.status(400).json({ errors });
+      } else {
+        throw error;
+      }
     }
   })
 );
