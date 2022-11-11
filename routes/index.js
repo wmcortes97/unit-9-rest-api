@@ -26,9 +26,10 @@ router.get(
     let user = req.currentUser;
 
     res.json({
-      fName: user.firstName,
-      lName: user.lastName,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.emailAddress,
+      password: user.password,
     });
   })
 );
