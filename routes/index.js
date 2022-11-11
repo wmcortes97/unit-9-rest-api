@@ -29,7 +29,6 @@ router.get(
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.emailAddress,
-      // password: user.password,
     });
     res.status(200);
   })
@@ -62,7 +61,9 @@ router.get(
   "/courses",
   // authenticateUser,
   asyncHandler(async (req, res) => {
-    const courses = await Course.findAll(); //return specific attributes
+    const courses = await Course.findAll({
+      attributes: ["title", "description", "estimatedTime", "materialsNeeded"],
+    }); //return specific attributes
     res.json(courses);
     res.status(200);
   })
