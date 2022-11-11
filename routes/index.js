@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models").User;
 // const Course = require("../models").Course;
-// const { authenticateUser } = require("./middleware/authenticateUser");
+const { authenticateUser } = require("../middleware/authenticateUser");
 
 //asyncHandler
 function asyncHandler(cb) {
@@ -19,16 +19,23 @@ function asyncHandler(cb) {
 /*GET route that returns all properties and values of currently authenticates user */
 router.get(
   "/users",
+  authenticateUser,
   asyncHandler(async (req, res) => {
-    let users = await User.findAll();
-    res.json(users);
+    let user = req.currentUser;
+
+    res.json({
+      name: user.firstName,
+    });
   })
 );
 
 /*POST route that will create a new user */
 router.post(
   "/users",
-  asyncHandler(async (req, res) => {})
+  asyncHandler(async (req, res) => {
+    await User.create(req.body);
+    res.status(201).json({ message: "Account successfully created" });
+  })
 );
 
 //-------------------COURSE ROUTES---------------//
