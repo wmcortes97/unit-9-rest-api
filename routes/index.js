@@ -91,7 +91,7 @@ router.get(
 /*POST route that will create a new course */
 router.post(
   "/courses",
-  // authenticateUser,
+  authenticateUser,
   asyncHandler(async (req, res) => {
     const course = await Course.create({
       title: req.body.title,
@@ -106,7 +106,7 @@ router.post(
 /*PUT route that will update/edit a new course */
 router.put(
   "/courses/:id",
-  // authenticateUser,
+  authenticateUser,
   asyncHandler(async (req, res) => {
     let course;
     try {
@@ -129,7 +129,7 @@ router.put(
 /*DELETE route that will delete the corresponing course */
 router.delete(
   "/courses/:id",
-  // authenticateUser,
+  authenticateUser,
   asyncHandler(async (req, res) => {
     let course;
     try {
