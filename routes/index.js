@@ -16,6 +16,8 @@ function asyncHandler(cb) {
 }
 
 //------------------USERS ROUTES--------------//
+
+const users = [];
 /*GET route that returns all properties and values of currently authenticates user */
 router.get(
   "/users",
@@ -24,7 +26,9 @@ router.get(
     let user = req.currentUser;
 
     res.json({
-      name: user.firstName,
+      fName: user.firstName,
+      lName: user.lastName,
+      email: user.emailAddress,
     });
   })
 );
@@ -33,8 +37,11 @@ router.get(
 router.post(
   "/users",
   asyncHandler(async (req, res) => {
-    await User.create(req.body);
-    res.status(201).json({ message: "Account successfully created" });
+    // await User.create(req.body);
+    // res.status(201).json({ message: "Account successfully created" });
+    const user = req.body;
+    users.push(user);
+    res.status(201).end();
   })
 );
 
