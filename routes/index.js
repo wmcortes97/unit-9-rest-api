@@ -76,13 +76,18 @@ router.get(
   asyncHandler(async (req, res, next) => {
     const course = await Course.findByPk(req.params.id);
     if (course) {
+      const user = await User.findOne({ where: { id: course.userId } });
       res.json({
         title: course.title,
         description: course.description,
         estimatedTime: course.estimatedTime,
         materialsNeeded: course.materialsNeeded,
         userId: course.userId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        emailAddress: user.emailAddress,
       });
+
       res.status(200);
     } else {
       const error = new Error("Course was not found");
