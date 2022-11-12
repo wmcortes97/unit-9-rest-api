@@ -4,6 +4,7 @@ const router = express.Router();
 const User = require("../models").User;
 const Course = require("../models").Course;
 const { authenticateUser } = require("../middleware/authenticateUser");
+const user = require("../models/user");
 
 //asyncHandler
 function asyncHandler(cb) {
@@ -59,11 +60,17 @@ router.post(
 /*GET route that will return all courses including the User associated with each course*/
 router.get(
   "/courses",
-  // authenticateUser,
   asyncHandler(async (req, res) => {
     const courses = await Course.findAll({
       attributes: ["title", "description", "estimatedTime", "materialsNeeded"],
-    }); //return specific attributes
+      include: [
+        {
+          model: User,
+          attributes: ["firstName", "lastName", "emailAddress"],
+        },
+      ],
+    });
+
     res.json(courses);
     res.status(200);
   })
@@ -164,10 +171,12 @@ router.delete(
   authenticateUser,
   asyncHandler(async (req, res) => {
     let course;
+    let user;
     try {
       course = await Course.findByPk(req.params.id);
+      user = await User.findOne({ where: { id: course.userId } });
       if (course) {
-        if (course.userId === req.body.userId) {
+        if (course.userId === user.id) {
           await course.destroy();
           res.status(204).end();
         } else {
@@ -177,7 +186,7 @@ router.delete(
         res.status(404).json({ message: "Course was not found" });
       }
     } catch (error) {
-      res.status(500).json({ message: err.message });
+      res.status(500).json({ message: error.message });
     }
   })
 );
