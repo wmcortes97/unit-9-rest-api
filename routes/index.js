@@ -62,10 +62,17 @@ router.get(
   "/courses",
   asyncHandler(async (req, res) => {
     const courses = await Course.findAll({
-      attributes: ["title", "description", "estimatedTime", "materialsNeeded"],
+      attributes: [
+        "id",
+        "title",
+        "description",
+        "estimatedTime",
+        "materialsNeeded",
+      ],
       include: [
         {
           model: User,
+
           attributes: ["firstName", "lastName", "emailAddress"],
         },
       ],
@@ -117,7 +124,7 @@ router.post(
         userId: req.body.userId,
       });
 
-      res.status(201).location("/").end();
+      res.status(201).location(`/${course.id}`).end();
     } catch (error) {
       if (
         error.name === "SequelizeValidationError" ||
