@@ -14,3 +14,5 @@ When you postman to test the routes, you can create your own user email and pass
 You can also use:
 Username: joe@smith.com
 Password: joepassword
+
+or upload RESTAPI.postman... to collections in postman
