@@ -1,3 +1,7 @@
+# unit-9-rest-api
+
+This project creates a REST API using the Express framework. We put into practice different http methods using CRUD (create, read, update, and delete)
+
 ## Deployment
 
 To deploy this project run, important dependencies include Sequelize, Express, Basic-Auth, Bcryptjs

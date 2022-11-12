@@ -86,7 +86,6 @@ router.get(
 /*GET route that will return the corresponding course including the User associated with that course */
 router.get(
   "/courses/:id",
-  // authenticateUser,
   asyncHandler(async (req, res, next) => {
     const course = await Course.findByPk(req.params.id);
     if (course) {
@@ -124,7 +123,7 @@ router.post(
         userId: req.body.userId,
       });
 
-      res.status(201).location(`/${course.id}`).end();
+      res.status(201).location(`courses/${course.id}`).end();
     } catch (error) {
       if (
         error.name === "SequelizeValidationError" ||
